@@ -154,5 +154,4 @@ cython_debug/
 archive
 *errors*
 *test*
-ovmodels
-hfmodels
+models
