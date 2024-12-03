@@ -1,16 +1,4 @@
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
-backend = os.getenv("BACKEND")
-
-if backend == "openvino":
-  from modelsOV import pipe
-elif backend == "openvino-genai":
-  from modelsOVgen import pipe
-else:
-  raise ValueError(f"Unknown backend: {backend}")
-
+from modelsOV import pipe
 import time
 
 prompt = "You are a helpful assistant that identify the person, time, place and what happen in brief in the following article: "

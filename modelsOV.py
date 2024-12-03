@@ -1,75 +1,41 @@
-from transformers import AutoConfig, AutoTokenizer
-from optimum.intel.openvino import OVModelForCausalLM
+from dotenv import load_dotenv
+import os
 
-import openvino as ov
-import openvino.properties as props
-import openvino.properties.hint as hints
-import openvino.properties.streams as streams
-import torch
-from transformers import (
-    AutoTokenizer,
-    StoppingCriteria,
-    StoppingCriteriaList,
-    TextIteratorStreamer,
-)
+load_dotenv()
+depth = os.getenv("DEPTH")
+device = os.getenv("DEVICE")
 
-model_dir = "models/Llama-3.2-3B-Instruct-ov-int4"
-ov_config = {hints.performance_mode(): hints.PerformanceMode.LATENCY, streams.num(): "1", props.cache_dir(): ""}
+if depth == "int4":
+  model_dir = "models/Llama-3.2-3B-Instruct-ov-int4"
+elif depth == "fp16":
+  model_dir = "models/Llama-3.2-3B-Instruct-ov-int4"
+else:
+  raise ValueError(f"Unknown depth: {depth}")
 
-# On a GPU device a model is executed in FP16 precision. For red-pajama-3b-chat model there known accuracy
-# issues caused by this, which we avoid by setting precision hint to "f32".
-core = ov.Core()
+if device != "CPU" or device != "GPU" or device != "NPU":
+  raise ValueError(f"Unknown device: {device}")
 
-tokenizer = AutoTokenizer.from_pretrained(model_dir, trust_remote_code=True)
+import openvino_genai as ov_genai
 
-tokenizer_kwargs = {}
+pipe = ov_genai.LLMPipeline(str(model_dir), device)
 
-class StopOnTokens(StoppingCriteria):
-  def __init__(self, token_ids):
-    self.token_ids = token_ids
+config = pipe.get_generation_config()
+config.temperature = 0.7
+config.top_p = 0.95
+config.top_k = 50
+config.do_sample = True
+config.max_new_tokens = 2048
+config.repetition_penalty = 1.1
 
-  def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs) -> bool:
-    for stop_id in self.token_ids:
-      if input_ids[0][-1] == stop_id:
-        return True
-    return False
+if __name__ == "__main__":
+  import time
 
-stop_tokens = ["<|eot_id|>"]
-if stop_tokens is not None:
-  if isinstance(stop_tokens[0], str):
-    stop_tokens = tokenizer.convert_tokens_to_ids(stop_tokens)
-
-  stop_tokens = [StopOnTokens(stop_tokens)]
-
-generate_kwargs = dict(
-  max_length=2048,
-  max_new_tokens=2048,
-  temperature=0.7,
-  do_sample=True,
-  top_p=0.95,
-  top_k=50,
-  stopping_criteria=StoppingCriteriaList(stop_tokens),
-)
-
-ovmodel = OVModelForCausalLM.from_pretrained(
-  model_dir,
-  device="NPU",
-  ov_config=ov_config,
-  config=AutoConfig.from_pretrained(model_dir, trust_remote_code=True),
-  trust_remote_code=True,
-  generate_kwargs=generate_kwargs
-)
-
-import time
-
-test_string = """
-You are a helpful assistant that identify the person, time, place and what happen in brief in the following article.
-On Friday, January 1, 2016, at approximately 8:15 AM, I parked my car in the Food Mart parking lot, located at 1234 Food Dr., in Goleta. I left my car unlocked since I was planning to return quickly. While I was inside the Food Mart, I had realized I left my cellphone on top of the center console of my car. When I returned to my car, at approximately 8:20 AM, I discovered my car’s front passenger door was ajar and my cellphone was gone. I did not see who stole my cellphone or know who could have stolen it. This report is for documentation purposes only.
-"""
-start_time = time.process_time()
-input_tokens = tokenizer(test_string, return_tensors="pt", **tokenizer_kwargs)
-answer = ovmodel.generate(**input_tokens, **generate_kwargs)
-print(tokenizer.batch_decode(answer, skip_special_tokens=True)[0])
-end_time = time.process_time()
-elapsed_time = end_time - start_time
-print(f"Process time: {elapsed_time} seconds")
+  test_string = """
+  You are a helpful assistant that identify the person, time, place and what happen in brief in the following article.
+  On first January 01, 2001 at 0310 hrs, I was dispatched to 962 loggerhead island drive in reference to a disturbance between the occupants. Upon arrival of OFC HEINZ and myself, we met with Vicki R.BRISTAL. She states she and her boyfriend were at a friend’s house. Earlier this evening and argued about child custody matters from her previous marriage. Buchan left the gathering went home. Upon BRISTOL’S arrival home she noticed some of her personal items and had been boxed up and placed by the front door. According to BRISTOL, she attempted to go into their bedroom and get some other belongings but was unable because BUCHAN had locked the door and would not let her enter. She also stated that incident did not involve any physical altercation.
+  """
+  start_time = time.process_time()
+  print(pipe.generate(test_string))
+  end_time = time.process_time()
+  elapsed_time = end_time - start_time
+  print(f"Process time: {elapsed_time} seconds")

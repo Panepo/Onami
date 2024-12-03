@@ -14,6 +14,6 @@ pip_install("-q", "--extra-index-url", "https://download.pytorch.org/whl/cpu",
             "git+https://github.com/huggingface/optimum-intel.git",
             "git+https://github.com/openvinotoolkit/nncf.git",
             "torch>=2.1", "datasets", "accelerate", "gradio>=4.19", "transformers>=4.43.1",
-            "onnx<=1.16.1", "sys_platform=='win32'", "einops", "transformers_stream_generator",
+            "onnx<=1.16.1", "einops", "transformers_stream_generator",
             "tiktoken", "bitsandbytes")
 
