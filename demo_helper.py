@@ -1,3 +1,10 @@
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+device = os.getenv("DEVICE")
+
+import time
 from typing import Any
 from queue import Queue
 import openvino as ov
@@ -135,14 +142,24 @@ def make_demo(pipe, model_configuration, model_id, model_language):
         history: updated history with message and answer from chatbot
         active_chat: if we are here, the chat is running or will be started, so return True
         """
+        print(f"String length: {len(message)}")
+        gen_start_time = time.process_time()
+        calTime = True
+
         streamer = TextQueue()
         config = pipe.get_generation_config()
         config.temperature = temperature
         config.top_p = top_p
         config.top_k = top_k
-        config.do_sample = temperature > 0.0
         config.max_new_tokens = max_new_tokens
         config.repetition_penalty = repetition_penalty
+
+        if device == "NPU":
+          config.do_sample = False
+        else:
+          config.do_sample = temperature > 0.0
+
+
         history = history or []
         if not history:
             pipe.start_chat(system_message=start_message)
@@ -157,15 +174,25 @@ def make_demo(pipe, model_configuration, model_id, model_language):
             genration function for single thread
             """
             streamer.reset()
+            ste_start_time = time.process_time()
             pipe.generate(new_prompt, config, streamer)
             stream_complete.set()
             streamer.end()
+            ste_end_time = time.process_time()
+            elapsed_time = ste_end_time - ste_start_time
+            print(f"Total generation time: {elapsed_time} seconds")
 
         t1 = Thread(target=generate_and_signal_complete)
         t1.start()
 
         partial_text = ""
         for new_text in streamer:
+            if calTime == True:
+                gen_end_time = time.process_time()
+                elapsed_time = gen_end_time - gen_start_time
+                print(f"First generation time: {elapsed_time} seconds")
+                calTime = False
+
             partial_text = text_processor(partial_text, new_text)
             history[-1][1] = partial_text
             yield "", history, streamer
