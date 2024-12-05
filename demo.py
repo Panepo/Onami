@@ -1,10 +1,14 @@
-from modelsOV import pipe
-from demo_helper import make_demo
-from modelsConfig import model_configuration
+def demo():
+  from modelsOV import pipe
+  from demo_helper import make_demo
+  from modelsConfig import model_configuration
 
-demo = make_demo(pipe, model_configuration, model_configuration["model_id"], "English")
+  demo = make_demo(pipe, model_configuration, model_configuration["model_id"], "English")
 
-try:
+  try:
     demo.launch(debug=True)
-except Exception:
+  except Exception:
     demo.launch(debug=True, share=True)
+
+if __name__ == "__main__":
+  demo()
