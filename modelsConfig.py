@@ -51,5 +51,20 @@ elif model == "phi3":
     <|assistant|>""",
     "completion_to_prompt": "",
   }
+elif model == "tinyllama":
+  model_configuration = {
+    "model_id": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+    "remote_code": False,
+    "start_message": f"<|system|>\n{DEFAULT_SYSTEM_PROMPT}</s>\n",
+    "history_template": "<|user|>\n{user}</s> \n<|assistant|>\n{assistant}</s> \n",
+    "current_message_template": "<|user|>\n{user}</s> \n<|assistant|>\n{assistant}",
+    "rag_prompt_template": f"""<|system|> {DEFAULT_RAG_PROMPT }</s>"""
+    + """
+    <|user|>
+    Question: {input}
+    Context: {context}
+    Answer: </s>
+    <|assistant|>""",
+  }
 else:
   raise ValueError(f"Unknown depth: {model}")

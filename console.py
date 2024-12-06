@@ -1,12 +1,17 @@
 import time
 
-prompt = "You are a helpful assistant that identify the person, time, place and what happen in brief in the following article: "
+prompt = ""
 
 def demo():
   start_time = time.time()
 
   from modelsOV import pipe, config, model_dir
-  pipe.start_chat(system_message=prompt)
+  DEFAULT_SYSTEM_PROMPT = """\
+  You are a helpful, respectful and honest assistant. Always answer as helpfully as possible, while being safe.  Your answers should not include any harmful, unethical, racist, sexist, toxic, dangerous, or illegal content. Please ensure that your responses are socially unbiased and positive in nature.
+  If a question does not make any sense or is not factually coherent, explain why instead of answering something not correct. If you don't know the answer to a question, please don't share false information.\
+  """
+
+  pipe.start_chat(system_message=DEFAULT_SYSTEM_PROMPT)
 
   import openvino_genai as ov_genai
   tokenizers = ov_genai.Tokenizer(model_dir)
