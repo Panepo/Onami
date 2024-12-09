@@ -1,19 +1,23 @@
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+nightly = os.getenv("NIGHTLY")
+
 import sys
 
 def pip_install(*args):
-    import subprocess  # nosec - disable B404:import-subprocess check
+  import subprocess  # nosec - disable B404:import-subprocess check
 
-    cli_args = []
-    for arg in args:
-        cli_args.extend(str(arg).split(" "))
-    subprocess.run([sys.executable, "-m", "pip", "install", *cli_args], check=True)
+  cli_args = []
+  for arg in args:
+    cli_args.extend(str(arg).split(" "))
+  subprocess.run([sys.executable, "-m", "pip", "install", *cli_args], check=True)
 
 pip_install("-Uq", "pip")
-pip_install("-q", "openvino>=2024.3.0", "openvino-tokenizers[transformers]", "openvino-genai")
-pip_install("-q", "--extra-index-url", "https://download.pytorch.org/whl/cpu",
-            "git+https://github.com/huggingface/optimum-intel.git",
-            "git+https://github.com/openvinotoolkit/nncf.git",
-            "torch>=2.1", "datasets", "accelerate", "gradio>=4.19", "transformers>=4.43.1",
-            "onnx<=1.16.1", "einops", "transformers_stream_generator",
-            "tiktoken", "bitsandbytes", "python-dotenv")
+pip_install("gradio>=4.19", "python-dotenv")
 
+if nightly == "true":
+  pip_install("--pre", "--extra-index-url", "https://storage.openvinotoolkit.org/simple/wheels/nightly", "openvino", "openvino-tokenizers", "openvino_genai")
+else:
+  pip_install("openvino", "openvino-tokenizers", "openvino_genai")

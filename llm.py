@@ -5,12 +5,16 @@ load_dotenv()
 device = os.getenv("DEVICE")
 model = os.getenv("MODEL")
 
+from model_download import llama32_dir, tinyllama_dir, phi3_dir, phi35_dir
+
 if model == "llama3.2":
-  model_dir = "models/Llama-3.2-3B-Instruct-ov-int4"
+  model_dir = llama32_dir
 elif model == "tinyllama":
-  model_dir = "models/TinyLlama-1.1B-Chat-v1.0-int4-ov"
+  model_dir = tinyllama_dir
 elif model == "phi3":
-  model_dir = "models/Phi-3-mini-4k-instruct-int4-ov"
+  model_dir = phi3_dir
+elif model == "phi3.5":
+  model_dir = phi35_dir
 else:
   raise ValueError(f"Unknown depth: {model}")
 
@@ -20,17 +24,22 @@ elif device == "GPU":
   print("Current running on GPU")
 elif device == "NPU":
   print("Current running on NPU")
+  if not model == "phi3":
+    raise ValueError(f"Only Phi-3 model is supported on NPU")
 else:
   raise ValueError(f"Unknown device: {device}")
 
 import openvino_genai as ov_genai
-from modelsConfig import model_configuration
+from model_config import model_configuration
 
 tokenizers = ov_genai.Tokenizer(model_dir)
 tokenizer_kwargs = {}
-stop_token_ids = tokenizers.encode(model_configuration["stop_tokens"], **tokenizer_kwargs)
+pipeline_config = {}
 
-pipeline_config = { "stop_token_ids": stop_token_ids }
+stop_token = model_configuration.get("stop_tokens", "")
+if (len(stop_token) > 0):
+  stop_token_ids = tokenizers.encode(stop_token, **tokenizer_kwargs)
+  pipeline_config["stop_token_ids"] = stop_token_ids
 
 if device == "NPU":
   pipeline_config["NPUW_CACHE_DIR"] = ".npucache"
@@ -38,11 +47,11 @@ if device == "NPU":
 else:
   pipe = ov_genai.LLMPipeline(str(model_dir), device)
 
-config = pipe.get_generation_config()
-config.temperature = 0.7
-config.top_p = 0.95
-config.top_k = 50
+config = ov_genai.GenerationConfig()
 config.max_new_tokens = 2048
+config.temperature = 0.1
+config.top_p = 1.0
+config.top_k = 50
 config.repetition_penalty = 1.1
 
 if device == "NPU":

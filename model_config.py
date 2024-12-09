@@ -13,6 +13,13 @@ DEFAULT_RAG_PROMPT = """\
 You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise.\
 """
 
+def phi_completion_to_prompt(completion):
+    return f"<|system|><|end|><|user|>{completion}<|end|><|assistant|>\n"
+
+
+def llama3_completion_to_prompt(completion):
+    return f"<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n<|eot_id|><|start_header_id|>user<|end_header_id|>\n\n{completion}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n"
+
 if model == "llama3.2":
   model_configuration = {
     "model_id": "meta-llama/Llama-3.2-3B-Instruct",
@@ -32,7 +39,7 @@ if model == "llama3.2":
 
 
     """,
-    "completion_to_prompt": "",
+    "completion_to_prompt": llama3_completion_to_prompt,
   }
 elif model == "phi3":
   model_configuration = {
@@ -49,7 +56,7 @@ elif model == "phi3":
     Context: {context}
     Answer: <|end|>
     <|assistant|>""",
-    "completion_to_prompt": "",
+    "completion_to_prompt": phi_completion_to_prompt,
   }
 elif model == "tinyllama":
   model_configuration = {
@@ -65,6 +72,23 @@ elif model == "tinyllama":
     Context: {context}
     Answer: </s>
     <|assistant|>""",
+  }
+elif model == "phi3.5":
+  model_configuration = {
+    "model_id": "microsoft/Phi-3.5-mini-instruct",
+    "remote_code": True,
+    "start_message": "<|system|>\n{DEFAULT_SYSTEM_PROMPT}<|end|>\n",
+    "history_template": "<|user|>\n{user}<|end|> \n<|assistant|>\n{assistant}<|end|>\n",
+    "current_message_template": "<|user|>\n{user}<|end|> \n<|assistant|>\n{assistant}",
+    "stop_tokens": ["<|end|>"],
+    "rag_prompt_template": f"""<|system|> {DEFAULT_RAG_PROMPT }<|end|>"""
+    + """
+    <|user|>
+    Question: {input}
+    Context: {context}
+    Answer: <|end|>
+    <|assistant|>""",
+    "completion_to_prompt": phi_completion_to_prompt,
   }
 else:
   raise ValueError(f"Unknown depth: {model}")
