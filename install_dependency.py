@@ -1,8 +1,4 @@
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
-nightly = os.getenv("NIGHTLY")
+nightly = "false"
 
 import sys
 
