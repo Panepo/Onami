@@ -16,7 +16,7 @@ elif model == "phi3":
 elif model == "phi3.5":
   model_dir = phi35_dir
 else:
-  raise ValueError(f"Unknown depth: {model}")
+  raise ValueError(f"Unknown model: {model}")
 
 if device == "CPU":
   print("Current running on CPU")
