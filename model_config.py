@@ -29,6 +29,8 @@ if model == "llama3.2":
     "start_message": " <|start_header_id|>system<|end_header_id|>\n\n" + DEFAULT_SYSTEM_PROMPT + "<|eot_id|>",
     "history_template": "<|start_header_id|>user<|end_header_id|>\n\n{user}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n{assistant}<|eot_id|>",
     "current_message_template": "<|start_header_id|>user<|end_header_id|>\n\n{user}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n{assistant}",
+    "console_message_start": "<|start_header_id|>user<|end_header_id|>",
+    "console_message_end": "<|eot_id|><|start_header_id|>assistant<|end_header_id|>",
     "rag_prompt_template": f"<|start_header_id|>system<|end_header_id|>\n\n{DEFAULT_RAG_PROMPT}<|eot_id|>"
     + """<|start_header_id|>user<|end_header_id|>
 
