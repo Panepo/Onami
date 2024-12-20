@@ -1,7 +1,3 @@
-import time
-
-prompt = ""
-
 def demo():
   from llm import pipe, config
   from model_config import model_configuration, DEFAULT_SYSTEM_PROMPT
@@ -9,6 +5,9 @@ def demo():
   while 1:
     print("================================================")
     message = input("Please say something: ")
+    if message == "exit":
+      break
+
     start_message = model_configuration.get("start_message", DEFAULT_SYSTEM_PROMPT)
     console_message_start = model_configuration.get("console_message_start", "")
     console_message_end = model_configuration.get("console_message_end", "")
