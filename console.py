@@ -1,17 +1,45 @@
-def demo():
-  from llm import pipe, config
-  from model_config import model_configuration, DEFAULT_SYSTEM_PROMPT
+import argparse
+from llm import pipe, config
+from model_config import model_configuration, DEFAULT_SYSTEM_PROMPT
 
-  while 1:
-    print("================================================")
-    message = input("Please say something: ")
-    if message == "exit":
-      break
+def demo_chat():
+  def streamer(subword):
+    print(subword, end='', flush=True)
+    return False
+
+  pipe.start_chat()
+  try:
+    while 1:
+      print("================================================")
+      message = input("Please say something: ")
+      if message == "exit" or message == "quit" or message == "":
+        pipe.finish_chat()
+        break
+
+      start_message = model_configuration.get("start_message", DEFAULT_SYSTEM_PROMPT)
+      console_message_start = model_configuration.get("console_message_start", "")
+      console_message_end = model_configuration.get("console_message_end", "")
+      print("Assistant: ")
+      pipe.generate(start_message + console_message_start + message + console_message_end, config, streamer)
+      print("\n")
+  except KeyboardInterrupt:
+    pipe.finish_chat()
+
+def demo_perf():
+  pipe.start_chat()
+  try:
+    while 1:
+      print("================================================")
+      message = input("Please say something: ")
+      if message == "exit" or message == "quit" or message == "":
+        pipe.finish_chat()
+        break
 
     start_message = model_configuration.get("start_message", DEFAULT_SYSTEM_PROMPT)
     console_message_start = model_configuration.get("console_message_start", "")
     console_message_end = model_configuration.get("console_message_end", "")
     response = pipe.generate([start_message + console_message_start + message + console_message_end], config)
+
     print("================================================")
     print(f"Assistant: {response}")
 
@@ -24,6 +52,15 @@ def demo():
     print(f"TTFT: {perf_metrics.get_ttft().mean:.2f} ± {perf_metrics.get_ttft().std:.2f} ms")
     print(f"TPOT: {perf_metrics.get_tpot().mean:.2f} ± {perf_metrics.get_tpot().std:.2f} ms")
     print(f"Throughput : {perf_metrics.get_throughput().mean:.2f} ± {perf_metrics.get_throughput().std:.2f} tokens/s")
+  except KeyboardInterrupt:
+    pipe.finish_chat()
 
 if __name__ == "__main__":
-  demo()
+  parser = argparse.ArgumentParser()
+  parser.add_argument('chat', type=bool, help='Enable chat streaming mode')
+  args = parser.parse_args()
+
+  if args.chat:
+    demo_chat()
+  else:
+    demo_perf()

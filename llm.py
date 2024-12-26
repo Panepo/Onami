@@ -32,17 +32,19 @@ else:
 import openvino_genai as ov_genai
 from model_config import model_configuration
 
-tokenizers = ov_genai.Tokenizer(model_dir)
+tokenizer = ov_genai.Tokenizer(model_dir)
 tokenizer_kwargs = {}
 pipeline_config = {}
 
-stop_token = model_configuration.get("stop_tokens", "")
-if (len(stop_token) > 0):
-  stop_token_ids = tokenizers.encode(stop_token, **tokenizer_kwargs)
-  pipeline_config["stop_token_ids"] = stop_token_ids
+#stop_token = model_configuration.get("stop_tokens", "")
+#if (len(stop_token) > 0):
+#  stop_token_ids = tokenizer.encode(stop_token, **tokenizer_kwargs)
+#  pipeline_config["stop_token_ids"] = stop_token_ids
 
 if device == "NPU":
   pipeline_config["NPUW_CACHE_DIR"] = ".npucache"
+  pipeline_config["MAX_PROMPT_LEN"] = 1024
+  pipeline_config["MIN_RESPONSE_LEN"] = 512
   pipe = ov_genai.LLMPipeline(str(model_dir), "NPU", pipeline_config)
 else:
   pipe = ov_genai.LLMPipeline(str(model_dir), device)

@@ -11,7 +11,7 @@ def pip_install(*args):
   subprocess.run([sys.executable, "-m", "pip", "install", *cli_args], check=True)
 
 pip_install("-Uq", "pip")
-pip_install("gradio>=4.19", "python-dotenv")
+pip_install("gradio>=4.19", "python-dotenv", "transformers")
 
 if nightly == "true":
   pip_install("--pre", "--extra-index-url", "https://storage.openvinotoolkit.org/simple/wheels/nightly", "openvino", "openvino-tokenizers", "openvino_genai")
