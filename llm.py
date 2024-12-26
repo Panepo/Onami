@@ -7,27 +7,29 @@ model = os.getenv("MODEL")
 
 from model_download import llama32_dir, tinyllama_dir, phi3_dir, phi35_dir
 
-if model == "llama3.2":
-  model_dir = llama32_dir
-elif model == "tinyllama":
-  model_dir = tinyllama_dir
-elif model == "phi3":
-  model_dir = phi3_dir
-elif model == "phi3.5":
-  model_dir = phi35_dir
-else:
-  raise ValueError(f"Unknown model: {model}")
-
 if device == "CPU":
   print("Current running on CPU")
 elif device == "GPU":
   print("Current running on GPU")
 elif device == "NPU":
   print("Current running on NPU")
-  if not model == "phi3":
-    raise ValueError(f"Only Phi-3 model is supported on NPU")
 else:
   raise ValueError(f"Unknown device: {device}")
+
+if model == "llama3.2":
+  print("Current running on Llama-3.2 model")
+  model_dir = llama32_dir
+elif model == "tinyllama":
+  print("Current running on TinyLlama model")
+  model_dir = tinyllama_dir
+elif model == "phi3":
+  print("Current running on Phi-3 model")
+  model_dir = phi3_dir
+elif model == "phi3.5":
+  print("Current running on Phi-3.5 model")
+  model_dir = phi35_dir
+else:
+  raise ValueError(f"Unknown model: {model}")
 
 import openvino_genai as ov_genai
 from model_config import model_configuration
