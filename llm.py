@@ -11,6 +11,8 @@ if device == "CPU":
   print("Current running on CPU")
 elif device == "GPU":
   print("Current running on GPU")
+elif device == "GPU.1":
+  print("Current running on GPU.1")
 elif device == "NPU":
   print("Current running on NPU")
 else:
