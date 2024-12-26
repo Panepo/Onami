@@ -1,6 +1,4 @@
 import argparse
-from llm import pipe, config
-from model_config import model_configuration, DEFAULT_SYSTEM_PROMPT
 
 def demo_chat():
   def streamer(subword):
@@ -57,10 +55,13 @@ def demo_perf():
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
-  parser.add_argument('chat', type=bool, help='Enable chat streaming mode')
+  parser.add_argument('chat', type=bool, help='Enable chat streaming mode', default="")
   args = parser.parse_args()
 
-  if args.chat:
+  from llm import pipe, config
+  from model_config import model_configuration, DEFAULT_SYSTEM_PROMPT
+
+  if args.chat == "chat":
     demo_chat()
   else:
     demo_perf()
