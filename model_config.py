@@ -92,6 +92,8 @@ elif model == "phi3.5":
     Context: {context}
     Answer: <|end|>
     <|assistant|>""",
+    "console_message_start": "<|user|>\n",
+    "console_message_end": "<|end|> \n<|assistant|>\n",
     "completion_to_prompt": phi_completion_to_prompt,
   }
 else:
