@@ -1,5 +1,5 @@
 import argparse
-from llm_config import model_dir, llama32_dir, tinyllama_dir, phi3_dir, phi35_dir, llama3_dir
+from llm_config import model_dir, llama32_dir, tinyllama_dir, phi3_dir, phi35_dir, llama31_dir
 
 def download_model(model):
   if not model_dir.exists():
@@ -25,9 +25,9 @@ def download_model(model):
     print("Downloading Phi-3.5 4B model...")
     git_clone("https://huggingface.co/OpenVINO/Phi-3.5-mini-instruct-int4-ov", phi35_dir)
 
-  if not llama3_dir.exists() and model == "llama3.1":
+  if not llama31_dir.exists() and model == "llama3.1":
     print("Downloading Llama-3.1 8B model...")
-    git_clone("https://huggingface.co/AIFunOver/Llama-3.1-8B-Instruct-openvino-4bit", llama3_dir)
+    git_clone("https://huggingface.co/AIFunOver/Llama-3.1-8B-Instruct-openvino-4bit", llama31_dir)
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
