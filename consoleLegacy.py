@@ -30,7 +30,7 @@ from intel_npu_acceleration_library import NPUModelForCausalLM
 from intel_npu_acceleration_library.compiler import CompilerConfig
 import torch
 import threading
-from model_config import model_configuration, DEFAULT_SYSTEM_PROMPT
+from llm_config import model_configuration, DEFAULT_SYSTEM_PROMPT
 
 compiler_conf = CompilerConfig(dtype=torch.float16)
 

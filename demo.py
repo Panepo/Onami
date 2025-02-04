@@ -1,7 +1,7 @@
 def demo():
   from llm import pipe
   from demo_helper import make_demo
-  from model_config import model_configuration
+  from llm_config import model_configuration
 
   demo = make_demo(pipe, model_configuration, model_configuration["model_id"], "English")
 

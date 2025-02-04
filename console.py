@@ -5,7 +5,8 @@ def demo_chat():
     print(subword, end='', flush=True)
     return False
 
-  pipe.start_chat()
+  start_message = model_configuration.get("start_message", DEFAULT_SYSTEM_PROMPT)
+  pipe.start_chat(system_message=start_message)
   try:
     while 1:
       print("================================================")
@@ -14,11 +15,12 @@ def demo_chat():
         pipe.finish_chat()
         break
 
-      start_message = model_configuration.get("start_message", DEFAULT_SYSTEM_PROMPT)
-      console_message_start = model_configuration.get("console_message_start", "")
-      console_message_end = model_configuration.get("console_message_end", "")
+      if "completion_to_prompt" in model_configuration:
+        completion_to_prompt = model_configuration["completion_to_prompt"]
+        message = completion_to_prompt(message)
+
       print("Assistant: ")
-      pipe.generate(start_message + console_message_start + message + console_message_end, config, streamer)
+      pipe.generate(message, config, streamer)
       print("\n")
   except KeyboardInterrupt:
     pipe.finish_chat()
@@ -31,10 +33,11 @@ def demo_perf():
       if message == "exit" or message == "quit" or message == "":
         break
 
-      start_message = model_configuration.get("start_message", DEFAULT_SYSTEM_PROMPT)
-      console_message_start = model_configuration.get("console_message_start", "")
-      console_message_end = model_configuration.get("console_message_end", "")
-      response = pipe.generate([start_message + console_message_start + message + console_message_end], config)
+      if "completion_to_prompt" in model_configuration:
+        completion_to_prompt = model_configuration["completion_to_prompt"]
+        message = completion_to_prompt(message)
+
+      response = pipe.generate([message], config)
 
       print("================================================")
       print(f"Assistant: {response}")
@@ -62,7 +65,7 @@ if __name__ == "__main__":
   args = parser.parse_args()
 
   from llm import pipe, config
-  from model_config import model_configuration, DEFAULT_SYSTEM_PROMPT
+  from llm_config import model_configuration, DEFAULT_SYSTEM_PROMPT
 
   if args.chat:
     print("Current running on Chat streaming mode")

@@ -5,7 +5,7 @@ load_dotenv()
 device = os.getenv("DEVICE")
 model = os.getenv("MODEL")
 
-from model_download import llama32_dir, tinyllama_dir, phi3_dir, phi35_dir
+from llm_config import llama31_dir, llama32_dir, tinyllama_dir, phi3_dir, phi35_dir, deepseekr1_dir, deepseekr18_dir
 
 if device == "CPU":
   print("Current running on CPU")
@@ -19,31 +19,35 @@ else:
   raise ValueError(f"Unknown device: {device}")
 
 if model == "llama3.2":
-  print("Current running on Llama-3.2 model")
+  print("Current running on Llama-3.2 3B model")
   model_dir = llama32_dir
+elif model == "llama3.1":
+  print("Current running on Llama-3.1 8B model")
+  model_dir = llama31_dir
 elif model == "tinyllama":
-  print("Current running on TinyLlama model")
+  print("Current running on TinyLlama 1.5B model")
   model_dir = tinyllama_dir
 elif model == "phi3":
-  print("Current running on Phi-3 model")
+  print("Current running on Phi-3 4B model")
   model_dir = phi3_dir
 elif model == "phi3.5":
-  print("Current running on Phi-3.5 model")
+  print("Current running on Phi-3.5 4B model")
   model_dir = phi35_dir
+elif model == "deepseekr1":
+  print("Current running on DeepSeek-R1 1.5B model")
+  model_dir = deepseekr1_dir
+elif model == "deepseekr18":
+  print("Current running on DeepSeek-R1 8B model")
+  model_dir = deepseekr18_dir
 else:
   raise ValueError(f"Unknown model: {model}")
 
 import openvino_genai as ov_genai
-from model_config import model_configuration
+from llm_config import model_configuration
 
-tokenizer = ov_genai.Tokenizer(model_dir)
-tokenizer_kwargs = {}
+#tokenizer = ov_genai.Tokenizer(model_dir)
+#tokenizer_kwargs = {}
 pipeline_config = {}
-
-#stop_token = model_configuration.get("stop_tokens", "")
-#if (len(stop_token) > 0):
-#  stop_token_ids = tokenizer.encode(stop_token, **tokenizer_kwargs)
-#  pipeline_config["stop_token_ids"] = stop_token_ids
 
 if device == "NPU":
   pipeline_config["NPUW_CACHE_DIR"] = ".npucache"
@@ -52,6 +56,9 @@ if device == "NPU":
   pipe = ov_genai.LLMPipeline(str(model_dir), "NPU", pipeline_config)
 else:
   pipe = ov_genai.LLMPipeline(str(model_dir), device)
+
+if "genai_chat_template" in model_configuration:
+  pipe.get_tokenizer().set_chat_template(model_configuration["genai_chat_template"])
 
 config = ov_genai.GenerationConfig()
 config.max_new_tokens = 2048
@@ -65,4 +72,5 @@ if device == "NPU":
 else:
   config.do_sample = config.temperature > 0.0
 
-
+if "stop_strings" in model_configuration:
+  config.stop_strings = set(model_configuration["stop_strings"])

@@ -1,15 +1,7 @@
-from pathlib import Path
+import argparse
+from llm_config import model_dir, llama32_dir, tinyllama_dir, phi3_dir, phi35_dir, llama3_dir
 
-model_dir = Path("models")
-
-llama32_dir = model_dir / "Llama-3.2-3B-Instruct-openvino-4bit"
-tinyllama_dir = model_dir / "TinyLlama-1.1B-Chat-v1.0-int4-ov"
-phi35_dir = model_dir / "Phi-3.5-4k-instruct-int4-ov"
-phi3_dir = model_dir / "Phi-3-mini-4k-instruct-int4-ov"
-
-#llama3_dir = model_dir / "Meta-Llama-3-8B-OpenVINO-INT4"
-
-def download_model():
+def download_model(model):
   if not model_dir.exists():
     model_dir.mkdir()
 
@@ -17,20 +9,34 @@ def download_model():
     import subprocess  # nosec - disable B404:import-subprocess check
     subprocess.run(["git", "clone", repo, path], check=True)
 
-  if not llama32_dir.exists():
+  if not llama32_dir.exists() and model == "llama3.2":
+    print("Downloading Llama-3.2 3B model...")
     git_clone("https://huggingface.co/AIFunOver/Llama-3.2-3B-Instruct-openvino-4bit", llama32_dir)
 
-  if not tinyllama_dir.exists():
+  if not tinyllama_dir.exists() and model == "tinyllama":
+    print("Downloading TinyLlama 1.5B model...")
     git_clone("https://huggingface.co/OpenVINO/TinyLlama-1.1B-Chat-v1.0-int4-ov", tinyllama_dir)
 
-  if not phi3_dir.exists():
+  if not phi3_dir.exists() and model == "phi3":
+    print("Downloading Phi-3 4B model...")
     git_clone("https://huggingface.co/OpenVINO/Phi-3-mini-4k-instruct-int4-ov", phi3_dir)
 
-  if not phi35_dir.exists():
+  if not phi35_dir.exists() and model == "phi3.5":
+    print("Downloading Phi-3.5 4B model...")
     git_clone("https://huggingface.co/OpenVINO/Phi-3.5-mini-instruct-int4-ov", phi35_dir)
 
-  #if not llama3_dir.exists():
-  #  git_clone("https://huggingface.co/rajatkrishna/Meta-Llama-3-8B-OpenVINO-INT4", llama3_dir)
+  if not llama3_dir.exists() and model == "llama3.1":
+    print("Downloading Llama-3.1 8B model...")
+    git_clone("https://huggingface.co/AIFunOver/Llama-3.1-8B-Instruct-openvino-4bit", llama3_dir)
 
 if __name__ == "__main__":
-  download_model()
+  parser = argparse.ArgumentParser()
+  parser.add_argument(
+    "-m",
+    "--model",
+    required=True,
+    help="Download model, currently supported models are llama3.2, tinyllama, phi3, phi3.5, llama3.1",
+  )
+  args = parser.parse_args()
+
+  download_model(args.model)
