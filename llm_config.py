@@ -35,108 +35,49 @@ def llama3_completion_to_prompt(completion):
 if model == "llama3.2":
   model_configuration = {
     "model_id": "meta-llama/Llama-3.2-3B-Instruct",
-    "start_message": DEFAULT_SYSTEM_PROMPT,
-    "stop_tokens": ["<|eot_id|>"],
-    "has_chat_template": True,
-    "start_message": " <|start_header_id|>system<|end_header_id|>\n\n" + DEFAULT_SYSTEM_PROMPT + "<|eot_id|>",
-    "history_template": "<|start_header_id|>user<|end_header_id|>\n\n{user}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n{assistant}<|eot_id|>",
-    "current_message_template": "<|start_header_id|>user<|end_header_id|>\n\n{user}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n{assistant}",
-    "rag_prompt_template": f"<|start_header_id|>system<|end_header_id|>\n\n{DEFAULT_RAG_PROMPT}<|eot_id|>"
-    + """<|start_header_id|>user<|end_header_id|>
-
-
-    Question: {input}
-    Context: {context}
-    Answer:<|eot_id|><|start_header_id|>assistant<|end_header_id|>
-
-
-    """,
+    "system_prompt": DEFAULT_SYSTEM_PROMPT,
     "completion_to_prompt": llama3_completion_to_prompt,
+    "stop_strings": ["<|start_header_id|>", "<|end_header_id|>", "<|eot_id|>"]
   }
 elif model == "llama3.1":
    model_configuration = {
     "model_id": "meta-llama/Meta-Llama-3-8B-Instruct",
-    "remote_code": False,
-    "start_message": DEFAULT_SYSTEM_PROMPT,
-    "stop_tokens": ["<|eot_id|>", "<|end_of_text|>"],
-    "has_chat_template": True,
-    "start_message": " <|start_header_id|>system<|end_header_id|>\n\n" + DEFAULT_SYSTEM_PROMPT + "<|eot_id|>",
-    "history_template": "<|start_header_id|>user<|end_header_id|>\n\n{user}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n{assistant}<|eot_id|>",
-    "current_message_template": "<|start_header_id|>user<|end_header_id|>\n\n{user}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n{assistant}",
-    "rag_prompt_template": f"<|start_header_id|>system<|end_header_id|>\n\n{DEFAULT_RAG_PROMPT}<|eot_id|>"
-    + """<|start_header_id|>user<|end_header_id|>
-
-
-    Question: {input}
-    Context: {context}
-    Answer:<|eot_id|><|start_header_id|>assistant<|end_header_id|>
-
-
-    """,
+    "system_prompt": DEFAULT_SYSTEM_PROMPT,
     "completion_to_prompt": llama3_completion_to_prompt,
+    "stop_strings": ["<|start_header_id|>", "<|end_header_id|>", "<|eot_id|>"]
   }
 elif model == "phi3":
   model_configuration = {
     "model_id": "microsoft/Phi-3-mini-4k-instruct",
-    "remote_code": True,
-    "start_message": "<|system|>\n{DEFAULT_SYSTEM_PROMPT}<|end|>\n",
-    "history_template": "<|user|>\n{user}<|end|> \n<|assistant|>\n{assistant}<|end|>\n",
-    "current_message_template": "<|user|>\n{user}<|end|> \n<|assistant|>\n{assistant}",
-    "stop_tokens": ["<|end|>"],
-    "rag_prompt_template": f"""<|system|> {DEFAULT_RAG_PROMPT }<|end|>"""
-    + """
-    <|user|>
-    Question: {input}
-    Context: {context}
-    Answer: <|end|>
-    <|assistant|>""",
+    "system_prompt": DEFAULT_SYSTEM_PROMPT,
     "completion_to_prompt": phi_completion_to_prompt,
+    "stop_strings": ["<|system|>", "<|user|>", "<|end|>", "<|assistant|>"]
   }
 elif model == "tinyllama":
   model_configuration = {
-      "model_id": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
-      "remote_code": False,
-      "start_message": f"<|system|>\n{DEFAULT_SYSTEM_PROMPT}</s>\n",
-      "history_template": "<|user|>\n{user}</s> \n<|assistant|>\n{assistant}</s> \n",
-      "current_message_template": "<|user|>\n{user}</s> \n<|assistant|>\n{assistant}",
-      "rag_prompt_template": f"""<|system|> {DEFAULT_RAG_PROMPT }</s>"""
-      + """
-      <|user|>
-      Question: {input}
-      Context: {context}
-      Answer: </s>
-      <|assistant|>""",
+    "model_id": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+    "system_prompt": DEFAULT_SYSTEM_PROMPT,
   }
 elif model == "phi3.5":
   model_configuration = {
     "model_id": "microsoft/Phi-3.5-mini-instruct",
-    "remote_code": True,
-    "start_message": "<|system|>\n{DEFAULT_SYSTEM_PROMPT}<|end|>\n",
-    "history_template": "<|user|>\n{user}<|end|> \n<|assistant|>\n{assistant}<|end|>\n",
-    "current_message_template": "<|user|>\n{user}<|end|> \n<|assistant|>\n{assistant}",
-    "stop_tokens": ["<|end|>"],
-    "rag_prompt_template": f"""<|system|> {DEFAULT_RAG_PROMPT }<|end|>"""
-    + """
-    <|user|>
-    Question: {input}
-    Context: {context}
-    Answer: <|end|>
-    <|assistant|>""",
+    "system_prompt": DEFAULT_SYSTEM_PROMPT,
     "completion_to_prompt": phi_completion_to_prompt,
+    "stop_strings": ["<|system|>", "<|user|>", "<|end|>", "<|assistant|>"]
   }
 elif model == "deepseekr1":
    model_configuration = {
     "model_id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
     "genai_chat_template": "{% for message in messages %}{% if loop.first %}{{ '<｜begin▁of▁sentence｜>' }}{% endif %}{% if message['role'] == 'system' and message['content'] %}{{ message['content'] }}{% elif message['role'] == 'user' %}{{  '<｜User｜>' +  message['content'] }}{% elif message['role'] == 'assistant' %}{{ '<｜Assistant｜>' +  message['content'] + '<｜end▁of▁sentence｜>' }}{% endif %}{% if loop.last and add_generation_prompt and message['role'] != 'assitant' %}{{ '<｜Assistant｜>' }}{% endif %}{% endfor %}",
     "system_prompt": DEFAULT_SYSTEM_PROMPT,
-    "stop_strings": ["<｜end▁of▁sentence｜>", "<｜User｜>", "</User|>", "<|User|>", "<|end_of_sentence|>", "</｜"],
+    "stop_strings": ["<｜end▁of▁sentence｜>", "<｜User｜>", "</User|>", "<|User|>", "<|end_of_sentence|>", "</｜", "｜end▁of▁sentence｜>"],
   }
 elif model == "deepseekr18":
    model_configuration = {
     "model_id": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
     "genai_chat_template": "{% for message in messages %}{% if loop.first %}{{ '<｜begin▁of▁sentence｜>' }}{% endif %}{% if message['role'] == 'system' and message['content'] %}{{ message['content'] }}{% elif message['role'] == 'user' %}{{  '<｜User｜>' +  message['content'] }}{% elif message['role'] == 'assistant' %}{{ '<｜Assistant｜>' +  message['content'] + '<｜end▁of▁sentence｜>' }}{% endif %}{% if loop.last and add_generation_prompt and message['role'] != 'assitant' %}{{ '<｜Assistant｜>' }}{% endif %}{% endfor %}",
     "system_prompt": DEFAULT_SYSTEM_PROMPT,
-    "stop_strings": ["<｜end▁of▁sentence｜>", "<｜User｜>", "</User|>", "<|User|>", "<|end_of_sentence|>", "</｜"],
+    "stop_strings": ["<｜end▁of▁sentence｜>", "<｜User｜>", "</User|>", "<|User|>", "<|end_of_sentence|>", "</｜", "｜end▁of▁sentence｜>"],
   }
 else:
   raise ValueError(f"Unknown model: {model}")
