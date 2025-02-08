@@ -5,7 +5,7 @@ load_dotenv()
 device = os.getenv("DEVICE")
 model = os.getenv("MODEL")
 
-from llm_config import llama31_dir, llama32_dir, tinyllama_dir, phi3_dir, phi35_dir, deepseekr1_dir, deepseekr18_dir
+from llm_config import model_dir, model_path, model_configuration
 
 if device == "CPU":
   print("Current running on CPU")
@@ -19,43 +19,40 @@ else:
   raise ValueError(f"Unknown device: {device}")
 
 if model == "llama3.2":
-  print("Current running on Llama-3.2 3B model")
-  model_dir = llama32_dir
+  print(f"Current running on {model_configuration['model_id']} model")
 elif model == "llama3.1":
   print("Current running on Llama-3.1 8B model")
-  model_dir = llama31_dir
 elif model == "tinyllama":
   print("Current running on TinyLlama 1.5B model")
-  model_dir = tinyllama_dir
 elif model == "phi3":
   print("Current running on Phi-3 4B model")
-  model_dir = phi3_dir
 elif model == "phi3.5":
   print("Current running on Phi-3.5 4B model")
-  model_dir = phi35_dir
+elif model == "phi4":
+  print("Current running on Phi-4 14B model")
 elif model == "deepseekr1":
   print("Current running on DeepSeek-R1 1.5B model")
-  model_dir = deepseekr1_dir
 elif model == "deepseekr18":
   print("Current running on DeepSeek-R1 8B model")
-  model_dir = deepseekr18_dir
+elif model == "gemma2":
+  print(f"Current running on {model_configuration['model_id']} model")
 else:
   raise ValueError(f"Unknown model: {model}")
+
+target_dir = model_dir / model_path[model]
 
 import openvino_genai as ov_genai
 from llm_config import model_configuration
 
-#tokenizer = ov_genai.Tokenizer(model_dir)
-#tokenizer_kwargs = {}
 pipeline_config = {}
 
 if device == "NPU":
   pipeline_config["NPUW_CACHE_DIR"] = ".npucache"
   pipeline_config["MAX_PROMPT_LEN"] = 1024
   pipeline_config["MIN_RESPONSE_LEN"] = 512
-  pipe = ov_genai.LLMPipeline(str(model_dir), "NPU", pipeline_config)
+  pipe = ov_genai.LLMPipeline(str(target_dir), "NPU", pipeline_config)
 else:
-  pipe = ov_genai.LLMPipeline(str(model_dir), device)
+  pipe = ov_genai.LLMPipeline(str(target_dir), device)
 
 if "genai_chat_template" in model_configuration:
   pipe.get_tokenizer().set_chat_template(model_configuration["genai_chat_template"])

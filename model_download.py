@@ -1,5 +1,5 @@
 import argparse
-from llm_config import model_dir, llama32_dir, tinyllama_dir, phi3_dir, phi35_dir, llama31_dir
+from llm_config import model_dir, model_path
 
 def download_model(model):
   if not model_dir.exists():
@@ -9,25 +9,39 @@ def download_model(model):
     import subprocess  # nosec - disable B404:import-subprocess check
     subprocess.run(["git", "clone", repo, path], check=True)
 
-  if not llama32_dir.exists() and model == "llama3.2":
-    print("Downloading Llama-3.2 3B model...")
-    git_clone("https://huggingface.co/AIFunOver/Llama-3.2-3B-Instruct-openvino-4bit", llama32_dir)
+  target_dir = model_dir / model_path[model]
 
-  if not tinyllama_dir.exists() and model == "tinyllama":
-    print("Downloading TinyLlama 1.5B model...")
-    git_clone("https://huggingface.co/OpenVINO/TinyLlama-1.1B-Chat-v1.0-int4-ov", tinyllama_dir)
-
-  if not phi3_dir.exists() and model == "phi3":
-    print("Downloading Phi-3 4B model...")
-    git_clone("https://huggingface.co/OpenVINO/Phi-3-mini-4k-instruct-int4-ov", phi3_dir)
-
-  if not phi35_dir.exists() and model == "phi3.5":
-    print("Downloading Phi-3.5 4B model...")
-    git_clone("https://huggingface.co/OpenVINO/Phi-3.5-mini-instruct-int4-ov", phi35_dir)
-
-  if not llama31_dir.exists() and model == "llama3.1":
+  if not target_dir.exists() and model == "llama3.1":
     print("Downloading Llama-3.1 8B model...")
-    git_clone("https://huggingface.co/AIFunOver/Llama-3.1-8B-Instruct-openvino-4bit", llama31_dir)
+    git_clone("https://huggingface.co/AIFunOver/Llama-3.1-8B-Instruct-openvino-4bit", target_dir)
+
+  if not target_dir.exists() and model == "llama3.2":
+    print("Downloading Llama-3.2 3B model...")
+    git_clone("https://huggingface.co/AIFunOver/Llama-3.2-3B-Instruct-openvino-4bit", target_dir)
+
+  if not target_dir.exists() and model == "tinyllama":
+    print("Downloading TinyLlama 1.5B model...")
+    git_clone("https://huggingface.co/OpenVINO/TinyLlama-1.1B-Chat-v1.0-int4-ov", target_dir)
+
+  if not target_dir.exists() and model == "phi3":
+    print("Downloading Phi-3 4B model...")
+    git_clone("https://huggingface.co/OpenVINO/Phi-3-mini-4k-instruct-int4-ov", target_dir)
+
+  if not target_dir.exists() and model == "phi3.5":
+    print("Downloading Phi-3.5 4B model...")
+    git_clone("https://huggingface.co/OpenVINO/Phi-3.5-mini-instruct-int4-ov", target_dir)
+
+  if not target_dir.exists() and model == "phi4":
+    print("Downloading Phi-4 14B model...")
+    git_clone("https://huggingface.co/AIFunOver/phi-4-openvino-4bit", target_dir)
+
+  if not target_dir.exists() and model == "gemma2":
+    print("Downloading Gemma-2 2B model...")
+    git_clone("https://huggingface.co/OpenVINO/gemma-2b-it-int4-ov", target_dir)
+
+  if not target_dir.exists() and model == "gemma29":
+    print("Downloading Gemma-2 9B model...")
+    git_clone("https://huggingface.co/OpenVINO/gemma-2-9b-it-int4-ov", target_dir)
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
