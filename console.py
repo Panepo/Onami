@@ -6,9 +6,10 @@ def demo_chat():
     return False
 
   start_message = model_configuration.get("start_message", DEFAULT_SYSTEM_PROMPT)
-  pipe.start_chat(system_message=start_message)
+  #pipe.start_chat(system_message=start_message)
   try:
     while 1:
+      pipe.start_chat(system_message=start_message)
       print("================================================")
       message = input("Please say something: ")
       if message == "exit" or message == "quit" or message == "":
@@ -22,6 +23,7 @@ def demo_chat():
       print("Assistant: ")
       pipe.generate(message, config, streamer)
       print("\n")
+      pipe.finish_chat()
   except KeyboardInterrupt:
     pipe.finish_chat()
 

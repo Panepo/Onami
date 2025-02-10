@@ -106,7 +106,15 @@ elif model == "gemma2":
    model_configuration = {
     "model_id": "google/gemma-2-2b-it",
     "system_prompt": DEFAULT_SYSTEM_PROMPT,
-    "stop_strings": ["<start_of_turn>", "<end_of_turn>"]
+    "stop_strings": ["<start_of_turn>", "<end_of_turn>"],
+    "completion_to_prompt": gemma_completion_to_prompt,
+   }
+elif model == "gemma29":
+   model_configuration = {
+    "model_id": "google/gemma-2-9b-it",
+    "system_prompt": DEFAULT_SYSTEM_PROMPT,
+    "stop_strings": ["<start_of_turn>", "<end_of_turn>"],
+    "completion_to_prompt": gemma_completion_to_prompt,
    }
 else:
   model_configuration = {}

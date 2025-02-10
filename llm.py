@@ -21,20 +21,22 @@ else:
 if model == "llama3.2":
   print(f"Current running on {model_configuration['model_id']} model")
 elif model == "llama3.1":
-  print("Current running on Llama-3.1 8B model")
+  print(f"Current running on {model_configuration['model_id']} model")
 elif model == "tinyllama":
-  print("Current running on TinyLlama 1.5B model")
+  print(f"Current running on {model_configuration['model_id']} model")
 elif model == "phi3":
-  print("Current running on Phi-3 4B model")
+  print(f"Current running on {model_configuration['model_id']} model")
 elif model == "phi3.5":
-  print("Current running on Phi-3.5 4B model")
+  print(f"Current running on {model_configuration['model_id']} model")
 elif model == "phi4":
-  print("Current running on Phi-4 14B model")
+  print(f"Current running on {model_configuration['model_id']} model")
 elif model == "deepseekr1":
-  print("Current running on DeepSeek-R1 1.5B model")
+  print(f"Current running on {model_configuration['model_id']} model")
 elif model == "deepseekr18":
-  print("Current running on DeepSeek-R1 8B model")
+  print(f"Current running on {model_configuration['model_id']} model")
 elif model == "gemma2":
+  print(f"Current running on {model_configuration['model_id']} model")
+elif model == "gemma29":
   print(f"Current running on {model_configuration['model_id']} model")
 else:
   raise ValueError(f"Unknown model: {model}")
