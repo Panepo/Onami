@@ -5,6 +5,7 @@ load_dotenv()
 device = os.getenv("DEVICE")
 model = os.getenv("MODEL")
 
+import openvino_genai as ov_genai
 from llm_config import model_dir, model_path, model_configuration
 
 if device == "CPU":
@@ -42,9 +43,6 @@ else:
   raise ValueError(f"Unknown model: {model}")
 
 target_dir = model_dir / model_path[model]
-
-import openvino_genai as ov_genai
-from llm_config import model_configuration
 
 pipeline_config = {}
 

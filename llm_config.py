@@ -14,6 +14,8 @@ model_path = {
   "llama3.1": "Llama-3.1-8B-Instruct-openvino-4bit",
   "llama3.2": "Llama-3.2-3B-Instruct-openvino-4bit",
 
+  "llama3.1draft": "Llama-3.1-8B-Instruct-FastDraft-150M-int8-ov",
+
   "tinyllama": "TinyLlama-1.1B-Chat-v1.0-int4-ov",
 
   "phi3": "Phi-3-mini-4k-instruct-int4-ov",

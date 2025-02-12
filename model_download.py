@@ -15,6 +15,10 @@ def download_model(model):
     print("Downloading Llama-3.1 8B model...")
     git_clone("https://huggingface.co/AIFunOver/Llama-3.1-8B-Instruct-openvino-4bit", target_dir)
 
+  if not target_dir.exists() and model == "llama3.1draft":
+    print("Downloading Llama-3.1 8B fastdraft model...")
+    git_clone("https://huggingface.co/OpenVINO/Llama-3.1-8B-Instruct-FastDraft-150M-int8-ov", target_dir)
+
   if not target_dir.exists() and model == "llama3.2":
     print("Downloading Llama-3.2 3B model...")
     git_clone("https://huggingface.co/AIFunOver/Llama-3.2-3B-Instruct-openvino-4bit", target_dir)
