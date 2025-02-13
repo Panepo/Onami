@@ -9,7 +9,7 @@ import openvino_genai as ov_genai
 from PIL import Image
 from openvino import Tensor
 import numpy as np
-from vlm_config import model_dir, model_path
+from llm_config import model_dir, model_path
 
 if device == "CPU":
   print("Current running on CPU")
@@ -24,8 +24,9 @@ else:
 
 if model == "phi3.5vision":
   print(f"Current running on Phi-3.5 vision model")
+  raise NotImplementedError("Phi-3.5 vision model is not supported yet")
 else:
-  raise ValueError(f"Unknown model: {model}")
+  raise ValueError(f"Unknown vision model: {model}")
 
 target_dir = model_dir / model_path[model]
 
