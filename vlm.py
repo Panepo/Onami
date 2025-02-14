@@ -12,7 +12,7 @@ from openvino import Tensor
 import requests
 import openvino_genai as ov_genai
 import numpy as np
-from llm_config import model_dir, model_path
+from llm_config import model_dir, model_path, model_configuration
 
 if device == "CPU":
   print("Current running on CPU")
@@ -29,7 +29,7 @@ if model == "phi3.5vision":
   print(f"Current running on Phi-3.5 vision model")
   raise NotImplementedError("Phi-3.5 vision model is not supported yet")
 elif model == "internvl2":
-  print(f"Current running on InternVL2 2B model")
+  print(f"Current running on {model_configuration['model_id']} model")
 else:
   raise ValueError(f"Unknown vision model: {model}")
 
@@ -59,6 +59,9 @@ pipe = ov_genai.VLMPipeline(target_dir, device, **enable_compile_cache)
 config = ov_genai.GenerationConfig()
 config.max_new_tokens = 128
 
+if "stop_strings" in model_configuration:
+  config.stop_strings = set(model_configuration["stop_strings"])
+
 if __name__ == "__main__":
   def streamer(subword: str) -> bool:
     print(subword, end="", flush=True)
@@ -76,3 +79,14 @@ if __name__ == "__main__":
 
   prompt = text_message
   output = pipe.generate(prompt, image=image_tensor, generation_config=config, streamer=streamer)
+  perf_metrics = output.perf_metrics
+
+  print(f"Load time: {perf_metrics.get_load_time():.2f} ms")
+  print(f"Generate time: {perf_metrics.get_generate_duration().mean:.2f} ± {perf_metrics.get_generate_duration().std:.2f} ms")
+  print(f"Tokenization time: {perf_metrics.get_tokenization_duration().mean:.2f} ± {perf_metrics.get_tokenization_duration().std:.2f} ms")
+  print(f"Detokenization time: {perf_metrics.get_detokenization_duration().mean:.2f} ± {perf_metrics.get_detokenization_duration().std:.2f} ms")
+  print(f"Embeddings preparation time: {perf_metrics.get_prepare_embeddings_duration().mean:.2f} ± {perf_metrics.get_prepare_embeddings_duration().std:.2f} ms")
+  print(f"TTFT: {perf_metrics.get_ttft().mean:.2f} ± {perf_metrics.get_ttft().std:.2f} ms")
+  print(f"TPOT: {perf_metrics.get_tpot().mean:.2f} ± {perf_metrics.get_tpot().std:.2f} ms")
+  print(f"Throughput : {perf_metrics.get_throughput().mean:.2f} ± {perf_metrics.get_throughput().std:.2f} tokens/s")
+
