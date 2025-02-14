@@ -26,10 +26,10 @@ def download_model(nightly):
   pip_install("gradio>=4.19", "python-dotenv", "transformers", "intel-npu-acceleration-library")
 
   if nightly == "true":
-    pip_uninstall("openvino", "openvino-tokenizers", "openvino_genai")
+    pip_uninstall("openvino", "openvino-tokenizers", "openvino_genai", "-y")
     pip_install("--pre", "--extra-index-url", "https://storage.openvinotoolkit.org/simple/wheels/nightly", "openvino", "openvino-tokenizers", "openvino_genai")
   else:
-    pip_uninstall("openvino", "openvino-tokenizers", "openvino_genai")
+    pip_uninstall("openvino", "openvino-tokenizers", "openvino_genai", "-y")
     pip_install("openvino", "openvino-tokenizers", "openvino_genai")
 
 
