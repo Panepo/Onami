@@ -29,6 +29,8 @@ model_path = {
 
   "gemma2": "gemma-2b-it-int4-ov",
   "gemma29": "gemma-2-9b-it-int4-ov",
+
+  "internvl2": "InternVL2-2B-int4-ov"
 }
 
 DEFAULT_SYSTEM_PROMPT = """\
@@ -120,5 +122,10 @@ elif model == "gemma29":
     "stop_strings": ["<start_of_turn>", "<end_of_turn>"],
     "completion_to_prompt": gemma_completion_to_prompt,
    }
+elif model == "internvl2":
+  model_configuration = {
+    "model_id": "meta-internvl/InternVL2-2B",
+    "stop_strings": ["### Answer"]
+  }
 else:
   model_configuration = {}

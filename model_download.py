@@ -51,6 +51,10 @@ def download_model(model):
     print("Downloading Phi-3.5 vision model...")
     git_clone("https://huggingface.co/OpenVINO/Phi-3.5-vision-instruct-int4-ov", target_dir)
 
+  if not target_dir.exists() and model == "internvl2":
+    print("Downloading InternVL2 2B model...")
+    git_clone("https://huggingface.co/OpenVINO/InternVL2-2B-int4-ov", target_dir)
+
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()

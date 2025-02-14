@@ -2,7 +2,7 @@ import gradio as gr
 from threading import Event, Thread
 from PIL import Image
 from queue import Queue
-from vlm import pipe, config
+from vlm import pipe, config, read_image
 
 class TextQueue:
   def __init__(self) -> None:
@@ -43,13 +43,10 @@ def fn_llm(image, question):
 
     def generate_and_signal_complete():
       streamer.reset()
-      generation_kwargs = {"prompt": question, "generation_config": config, "streamer": streamer}
-      if image is not None:
-          generation_kwargs["image"] = image
-      pipe.generate(**generation_kwargs)
+      image_tensor = read_image(image)
+      pipe.generate(question, image=image_tensor, generation_config=config, streamer=streamer)
       stream_complete.set()
       streamer.end()
-
 
     t1 = Thread(target=generate_and_signal_complete)
     t1.start()
@@ -63,13 +60,13 @@ def fn_llm(image, question):
 with gr.Blocks() as demo:
   with gr.Row():
     with gr.Column():
-      img_input = gr.Image(label="camera", sources="webcam", streaming=True, type="pil")
+      img_input = gr.Image(label="image", sources=["upload", "webcam", "clipboard"], type="pil")
     with gr.Column():
       txt_input = gr.Textbox(label="Ask a question", lines=2)
       btn_input = gr.Button("Submit")
       txt_output = gr.Textbox(label="LLM Anwsers", lines=2)
 
-  img_input.stream(fn_camera, img_input, img_input, stream_every=0.5, concurrency_limit=30)
+  #img_input.stream(fn_camera, img_input, img_input, stream_every=0.5, concurrency_limit=30)
   txt_input.submit(fn_llm, [img_input, txt_input], txt_output, queue=True)
   btn_input.click(fn_llm, [img_input, txt_input], txt_output, queue=True)
 
