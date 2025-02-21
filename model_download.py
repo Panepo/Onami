@@ -55,6 +55,10 @@ def download_model(model):
     print("Downloading InternVL2 2B model...")
     git_clone("https://huggingface.co/OpenVINO/InternVL2-2B-int4-ov", target_dir)
 
+  if not target_dir.exists() and model == "whisper-base":
+    print("Downloading whisper base model...")
+    git_clone("https://huggingface.co/OpenVINO/distil-whisper-base-int8-ov", target_dir)
+
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()

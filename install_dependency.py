@@ -21,9 +21,10 @@ def pip_uninstall(*args):
     cli_args.extend(str(arg).split(" "))
   subprocess.run([sys.executable, "-m", "pip", "uninstall", *cli_args], check=True)
 
-def download_model(nightly):
+def install_dep(nightly):
   pip_install("-Uq", "pip")
   pip_install("gradio>=4.19", "python-dotenv", "transformers", "intel-npu-acceleration-library")
+  pip_install("git+https://github.com/huggingface/optimum-intel.git")
 
   if nightly == "true":
     pip_uninstall("openvino", "openvino-tokenizers", "openvino_genai", "-y")
@@ -31,8 +32,6 @@ def download_model(nightly):
   else:
     pip_uninstall("openvino", "openvino-tokenizers", "openvino_genai", "-y")
     pip_install("openvino", "openvino-tokenizers", "openvino_genai")
-
-
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
@@ -45,6 +44,6 @@ if __name__ == "__main__":
   args = parser.parse_args()
 
   if is_venv():
-    download_model(args.nightly)
+    install_dep(args.nightly)
   else:
     print("Not running inside a virtual environment")

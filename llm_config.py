@@ -30,7 +30,9 @@ model_path = {
   "gemma2": "gemma-2b-it-int4-ov",
   "gemma29": "gemma-2-9b-it-int4-ov",
 
-  "internvl2": "InternVL2-2B-int4-ov"
+  "internvl2": "InternVL2-2B-int4-ov",
+
+  "whisper-base": "distil-whisper-base-int8-ov"
 }
 
 DEFAULT_SYSTEM_PROMPT = """\
