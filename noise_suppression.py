@@ -32,6 +32,7 @@ else:
 
 from openvino import Core
 import numpy as np
+import wave
 
 core = Core()
 
@@ -53,3 +54,26 @@ print("State_param_num = {} ({:.1f}Mb)".format(state_param_num, state_param_num*
 
 # load model to the device
 compiled_model = core.compile_model(ov_encoder, device)
+
+def wav_read(wav_name):
+  with wave.open(wav_name, "rb") as wav:
+    if wav.getsampwidth() != 2:
+      raise RuntimeError("wav file {} does not have int16 format".format(wav_name))
+    freq = wav.getframerate()
+
+    data = wav.readframes( wav.getnframes() )
+    x = np.frombuffer(data, dtype=np.int16)
+    x = x.astype(np.float32) * (1.0 / np.iinfo(np.int16).max)
+    if wav.getnchannels() > 1:
+      x = x.reshape(-1, wav.getnchannels())
+      x = x.mean(1)
+  return x, freq
+
+def wav_write(wav_name, x, freq):
+  x = np.clip(x, -1, +1)
+  x = (x*np.iinfo(np.int16).max).astype(np.int16)
+  with wave.open(wav_name, "wb") as wav:
+    wav.setnchannels(1)
+    wav.setframerate(freq)
+    wav.setsampwidth(2)
+    wav.writeframes(x.tobytes())

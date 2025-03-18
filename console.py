@@ -47,6 +47,8 @@ def demo_perf():
       print("================================================")
       perf_metrics = response.perf_metrics
       print(f"Load time: {perf_metrics.get_load_time():.2f} ms")
+      print(f"Input tokens: {perf_metrics.get_num_input_tokens()}")
+      print(f"Generated tokens: {perf_metrics.get_num_generated_tokens()}")
       print(f"Generate time: {perf_metrics.get_generate_duration().mean:.2f} ± {perf_metrics.get_generate_duration().std:.2f} ms")
       print(f"Tokenization time: {perf_metrics.get_tokenization_duration().mean:.2f} ± {perf_metrics.get_tokenization_duration().std:.2f} ms")
       print(f"Detokenization time: {perf_metrics.get_detokenization_duration().mean:.2f} ± {perf_metrics.get_detokenization_duration().std:.2f} ms")

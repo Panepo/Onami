@@ -66,7 +66,7 @@ with gr.Blocks() as demo:
       btn_input = gr.Button("Submit")
       txt_output = gr.Textbox(label="LLM Anwsers", lines=2)
 
-  #img_input.stream(fn_camera, img_input, img_input, stream_every=0.5, concurrency_limit=30)
+  img_input.stream(fn_camera, img_input, img_input, stream_every=1, concurrency_limit=30)
   txt_input.submit(fn_llm, [img_input, txt_input], txt_output, queue=True)
   btn_input.click(fn_llm, [img_input, txt_input], txt_output, queue=True)
 

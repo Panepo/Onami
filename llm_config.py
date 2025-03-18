@@ -19,7 +19,7 @@ model_path = {
   "tinyllama": "TinyLlama-1.1B-Chat-v1.0-int4-ov",
 
   "phi3": "Phi-3-mini-4k-instruct-int4-ov",
-  "phi3.5": "Phi-3.5-mini-instruct-int4-ov",
+  "phi3.5": "Phi-3.5-mini-instruct",
   "phi4": "phi-4-openvino-4bit",
 
   "phi3.5vision": "Phi-3.5-vision-instruct-int4-ov",

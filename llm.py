@@ -54,8 +54,10 @@ if device == "NPU":
 else:
   pipe = ov_genai.LLMPipeline(str(target_dir), device)
 
+tokenizer = pipe.get_tokenizer()
+
 if "genai_chat_template" in model_configuration:
-  pipe.get_tokenizer().set_chat_template(model_configuration["genai_chat_template"])
+  tokenizer.set_chat_template(model_configuration["genai_chat_template"])
 
 config = ov_genai.GenerationConfig()
 config.max_new_tokens = 2048
