@@ -26,6 +26,7 @@ def install_dep(nightly):
   pip_install("gradio>=4.19", "python-dotenv", "transformers", "intel-npu-acceleration-library")
   pip_install("git+https://github.com/huggingface/optimum-intel.git")
   pip_install("librosa")
+  pip_install("Pillow", "diffusers", "tqdm")
 
   if nightly == "true":
     pip_uninstall("openvino", "openvino-tokenizers", "openvino_genai", "-y")

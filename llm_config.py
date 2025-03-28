@@ -32,7 +32,9 @@ model_path = {
 
   "internvl2": "InternVL2-2B-int4-ov",
 
-  "whisper-base": "distil-whisper-base-int8-ov"
+  "whisper-base": "distil-whisper-base-int8-ov",
+
+  "stable-diffusion": "stable-diffusion-v1-5-int8-ov"
 }
 
 DEFAULT_SYSTEM_PROMPT = """\
