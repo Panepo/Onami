@@ -4,9 +4,6 @@ def demo(prompt:str, negative_prompt: str, input_image_path:str):
   import openvino as ov
   import numpy as np
   from PIL import Image
-  from diffusers.utils import load_image
-  from tqdm.notebook import tqdm
-  import sys
   import openvino_genai as ov_genai
   from img_gen import pipe
 
@@ -19,12 +16,6 @@ def demo(prompt:str, negative_prompt: str, input_image_path:str):
   input_image_tensor = image_to_tensor(input_image)
 
   random_generator = ov_genai.TorchGenerator(42)
-  pbar = tqdm(total=31)
-
-  def callback(step, num_steps, latent):
-    pbar.update(1)
-    sys.stdout.flush()
-    return False
 
   image_tensor = pipe.generate(
     prompt,
@@ -34,10 +25,7 @@ def demo(prompt:str, negative_prompt: str, input_image_path:str):
     num_inference_steps=20,
     num_images_per_prompt=1,
     generator=random_generator,
-    callback=callback,
   )
-
-  pbar.close()
 
   out_image = Image.fromarray(image_tensor.data[0])
   out_image.save("output.png")
