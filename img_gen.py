@@ -19,4 +19,4 @@ import openvino_genai as ov_genai
 from llm_config import model_dir, model_path
 
 target_dir = model_dir / model_path['stable-diffusion']
-pipe = ov_genai.Image2ImagePipeline(model_dir, device)
+pipe = ov_genai.Image2ImagePipeline(target_dir, device)
