@@ -46,17 +46,17 @@ DEFAULT_RAG_PROMPT = """\
 You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise.\
 """
 
-def phi_completion_to_prompt(completion):
-  return f"<|system|><|end|><|user|>{completion}<|end|><|assistant|>\n"
+def phi_completion_to_prompt(system: str, message: str):
+  return f"<|system|>{system}<|end|><|user|>{message}<|end|><|assistant|>\n"
 
-def phi4_completion_to_prompt(completion):
-  return f"<|im_start|>system<|im_sep|><|im_end|><|im_start|>user<|im_sep|>{completion}<|im_end|><|im_start|>assistant<|im_sep|>\n"
+def phi4_completion_to_prompt(system: str, message: str):
+  return f"<|im_start|>system<|im_sep|>{system}<|im_end|><|im_start|>user<|im_sep|>{message}<|im_end|><|im_start|>assistant<|im_sep|>\n"
 
-def llama3_completion_to_prompt(completion):
-  return f"<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n<|eot_id|><|start_header_id|>user<|end_header_id|>\n\n{completion}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n"
+def llama3_completion_to_prompt(system: str, message: str):
+  return f"<|begin_of_text|><|start_header_id|>system<|end_header_id|>{system}<|eot_id|><|start_header_id|>user<|end_header_id|>{message}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n"
 
-def gemma_completion_to_prompt(completion):
-  return f"<start_of_turn>user{completion}<end_of_turn>"
+def gemma_completion_to_prompt(system: str, message: str):
+  return f"<start_of_turn>user{message}<end_of_turn>"
 
 if model == "llama3.2":
   model_configuration = {

@@ -18,7 +18,7 @@ def demo_chat():
 
       if "completion_to_prompt" in model_configuration:
         completion_to_prompt = model_configuration["completion_to_prompt"]
-        message = completion_to_prompt(message)
+        message = completion_to_prompt("", message)
 
       print("Assistant: ")
       pipe.generate(message, config, streamer)
@@ -37,7 +37,7 @@ def demo_perf():
 
       if "completion_to_prompt" in model_configuration:
         completion_to_prompt = model_configuration["completion_to_prompt"]
-        message = completion_to_prompt(message)
+        message = completion_to_prompt("", message)
 
       response = pipe.generate([message], config)
 

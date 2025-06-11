@@ -41,11 +41,19 @@ class Tool:
       }
     }
 
-DEFAULT_SYSTEM_PROMPT = """\
+DEFAULT_SYSTEM_PROMPT_JSON = """\
 You are an expert in composing functions. You are given a question and a set of possible functions.
 Based on the question, you will need to make one or more function/tool calls to achieve the purpose.
 If none of the functions can be used, point it out. If the given question lacks the parameters required by the function, also point it out. You should only return the function call in tools call sections.
-If you decide to invoke any of the function(s), you MUST put it in the format of [func_name1(params_name1=params_value1, params_name2=params_value2...), func_name2(params)]
+If you decide to invoke any of the function(s), you MUST respond in the format {"name": function name1, "parameters": dictionary of argument name and its value}, {"name": function name2, "parameters": dictionary of argument name and its value}. Do not use variables.
+You SHOULD NOT include any other text in the response. Here is a list of functions in JSON format that you can invoke.
+"""
+
+DEFAULT_SYSTEM_PROMPT_ARRAY = """\
+You are an expert in composing functions. You are given a question and a set of possible functions.
+Based on the question, you will need to make one or more function/tool calls to achieve the purpose.
+If none of the functions can be used, point it out. If the given question lacks the parameters required by the function, also point it out. You should only return the function call in tools call sections.
+If you decide to invoke any of the function(s), you MUST respond in the format [func_name1(params_name1=params_value1, params_name2=params_value2...), func_name2(params)]. Do not use variables.
 You SHOULD NOT include any other text in the response. Here is a list of functions in JSON format that you can invoke.
 """
 
@@ -67,7 +75,7 @@ class Agent:
     self.tools.append(tool)
 
   def get_system_prompt(self) -> str:
-    return DEFAULT_SYSTEM_PROMPT + "[" + ", ".join([json.dumps(tool.get_tool()) for tool in self.tools]) + "]" + DEFAULT_SYSTEM_PROMPT_END
+    return DEFAULT_SYSTEM_PROMPT_ARRAY + "[" + ", ".join([json.dumps(tool.get_tool()) for tool in self.tools]) + "]" + DEFAULT_SYSTEM_PROMPT_END
 
   def completion_to_prompt(self, system: str, message: str) -> str:
     return PROMPT_HEADER_START + system + PROMPT_HEADER_END + message + PROMPT_FOOTER
