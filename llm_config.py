@@ -53,7 +53,7 @@ def phi4_completion_to_prompt(system: str, message: str):
   return f"<|im_start|>system<|im_sep|>{system}<|im_end|><|im_start|>user<|im_sep|>{message}<|im_end|><|im_start|>assistant<|im_sep|>\n"
 
 def llama3_completion_to_prompt(system: str, message: str):
-  return f"<|begin_of_text|><|start_header_id|>system<|end_header_id|>{system}<|eot_id|><|start_header_id|>user<|end_header_id|>{message}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n"
+  return f"<|begin_of_text|><|start_header_id|>system<|end_header_id|>{system}<|eot_id|><|start_header_id|>user<|end_header_id|>{message}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n"
 
 def gemma_completion_to_prompt(system: str, message: str):
   return f"<start_of_turn>user{message}<end_of_turn>"

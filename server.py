@@ -12,15 +12,14 @@ def chat():
   print(f"System: {system}")
   print(f"Prompt: {prompt}")
 
-  # Optionally use chat template if available
   if "completion_to_prompt" in model_configuration:
     completion_to_prompt = model_configuration["completion_to_prompt"]
     prompt = completion_to_prompt(system, prompt)
 
   response = pipe.generate(prompt, config)
-  print(f"Response: {response}")
+  print(f"Response:\n{response}")
   print("================================================")
-  return jsonify(response)
+  return response
 
 if __name__ == '__main__':
   from llm import pipe, config
