@@ -75,7 +75,7 @@ class Agent:
     self.tools.append(tool)
 
   def get_system_prompt(self) -> str:
-    return DEFAULT_SYSTEM_PROMPT_ARRAY + "[" + ", ".join([json.dumps(tool.get_tool()) for tool in self.tools]) + "]" + DEFAULT_SYSTEM_PROMPT_END
+    return DEFAULT_SYSTEM_PROMPT_JSON + "[" + ", ".join([json.dumps(tool.get_tool()) for tool in self.tools]) + "]" + DEFAULT_SYSTEM_PROMPT_END
 
   def completion_to_prompt(self, system: str, message: str) -> str:
     return PROMPT_HEADER_START + system + PROMPT_HEADER_END + message + PROMPT_FOOTER
